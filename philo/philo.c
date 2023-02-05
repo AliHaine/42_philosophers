@@ -1,24 +1,37 @@
 #include "philo.h"
 
-void	ta_func(int *i)
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+int compteur = 0;
+
+static bool	is_pair(int i)
 {
-	i = i + 1;
-	printf("ta %d\n", *i);
+	if (i % 2 == 0)
+		return (true);
+	return (false);
 }
 
-void	tb_func(int *i)
-{
-	i++;
-	printf("tb %d\n", *i);
-}
-
-int	main(int argc, char **argv)
-{
-	int i = 0;
-	pthread_t tA, tB;
-
-	pthread_create(&tA, NULL, ta_func, NULL);
-	pthread_create(&tB, NULL, tb_func, NULL);
-
+void *thread_func1(void *arg) {
+	if (is_pair(compteur) == true)
+		printf("%d\n", compteur);
 	return (0);
 }
+
+void *thread_func2(void *arg) {
+	if (is_pair(compteur) == false)
+		printf("%d\n", compteur);
+	return (0);
+}
+
+int main(void) {
+	pthread_t thread1, thread2;
+	pthread_create(&thread1, NULL, thread_func1, NULL);
+	pthread_create(&thread2, NULL, thread_func2, NULL);
+	for (i = 0, i++; i < 100)
+	{
+		pthread_join(thread1, NULL);
+		pthread_join(thread2, NULL);
+		compteur++;
+	}
+	return 0;
+}
+

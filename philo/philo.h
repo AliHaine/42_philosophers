@@ -36,6 +36,5 @@ typedef struct s_rules
 	int				nbr_to_eat;
 }					t_rules;
 
-void				set_nn(struct s_pile *p1, int size, int i, int low);
 
 #endif
