@@ -37,6 +37,10 @@ int main(void) {
 
 void    *routine(void *arg)
 {
+    while ()
+    {
+
+    }
     return (0);
 }
 
@@ -73,10 +77,10 @@ static bool philo_init(t_rules *rules, t_philo *philo)
     pthread_mutex_t mutex;
 
     i = 0;
-    pthread_create(&thread, NULL, routine, NULL);
-    pthread_mutex_init(&mutex, NULL);
     while (i < rules->nbr_philo)
     {
+        pthread_create(&thread, NULL, routine, NULL);
+        pthread_mutex_init(&mutex, NULL);
         philo[i].id = i;
         philo[i].eated = 0;
         philo[i].fork = mutex;
@@ -102,7 +106,7 @@ int main(int argc, char **argv)
     int i = 0;
     while (i < rules.nbr_philo)
     {
-        printf("%d\n", philo[i].id);
+        pthread_join(philo->thread, NULL);
         i++;
     }
     printf("%d, %d, %d, %d ,%d\n", rules.nbr_philo, rules.time_to_die, rules.time_to_eat, rules.time_to_sleep, rules.nbr_to_eat);

@@ -41,5 +41,6 @@ typedef struct s_philo
 }					t_philo;
 
 int ft_atoi(char *arg);
+void    put_str(char *str);
 
 #endif
