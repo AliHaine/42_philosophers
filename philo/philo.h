@@ -22,18 +22,23 @@
 # define ERROR_ALR_NBR "Ce nombre est déjà défini"
 # define ERROR_NOT_NBR "Seul les nombres sont acceptes"
 
-typedef struct s_philo
-{
-	int 			id;
-	int				eated;
-	bool			fork;
-}					t_philo;
-
 typedef struct s_rules
 {
-	int				nbr_philo;
-	int				nbr_to_eat;
+    int             time_to_die;
+    int             time_to_eat;
+    int             time_to_sleep;
+    int				nbr_philo;
+    int				nbr_to_eat;
 }					t_rules;
+
+typedef struct s_philo
+{
+    pthread_t       thread;
+	int 			id;
+	int				eated;
+    pthread_mutex_t	fork;
+    struct s_rules rules;
+}					t_philo;
 
 int ft_atoi(char *arg);
 

@@ -35,27 +35,78 @@ int main(void) {
 	return 0;
 }*/
 
+void    *routine(void *arg)
+{
+    return (0);
+}
+
+static bool rules_init(t_rules *rules, char **argv)
+{
+    int num;
+    int i;
+
+    i = 1;
+    while (argv[i])
+    {
+        num = ft_atoi(argv[i]);
+        if (num == 0)
+            return (false);
+        if (i == 1)
+            rules->nbr_philo = num;
+        else if (i == 2)
+            rules->time_to_die = num;
+        else if (i == 3)
+            rules->time_to_eat = num;
+        else if (i == 4)
+            rules->time_to_sleep = num;
+        else
+            rules->nbr_to_eat = num;
+        i++;
+    }
+    return (true);
+}
+
+static bool philo_init(t_rules *rules, t_philo *philo)
+{
+    int i;
+    pthread_t thread;
+    pthread_mutex_t mutex;
+
+    i = 0;
+    pthread_create(&thread, NULL, routine, NULL);
+    pthread_mutex_init(&mutex, NULL);
+    while (i < rules->nbr_philo)
+    {
+        philo[i].id = i;
+        philo[i].eated = 0;
+        philo[i].fork = mutex;
+        philo[i].thread = thread;
+        philo[i].rules = *rules;
+        i++;
+    }
+    return (true);
+}
 
 int main(int argc, char **argv)
 {
     t_rules rules;
-    int num;
+    t_philo *philo;
 
     if (argc != 5 && argc != 6)
         return (0);
-    num = ft_atoi(argv[1]);
-    if (num == 0)
+    rules_init(&rules, argv);
+    philo = malloc(sizeof(t_philo) * rules.nbr_philo);
+    if (!philo)
         return (0);
-    printf("%d\n", num);
-    rules.nbr_philo = num;
-    if (argc == 6)
+    philo_init(&rules, philo);
+    int i = 0;
+    while (i < rules.nbr_philo)
     {
-        num = ft_atoi(argv[5]);
-        if (num == 0)
-            return (0);
-        printf("%d\n", num);
-        rules.nbr_to_eat = num;
+        printf("%d\n", philo[i].id);
+        i++;
     }
+    printf("%d, %d, %d, %d ,%d\n", rules.nbr_philo, rules.time_to_die, rules.time_to_eat, rules.time_to_sleep, rules.nbr_to_eat);
+
     return (0);
 }
 
