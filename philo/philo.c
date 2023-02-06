@@ -1,6 +1,6 @@
 #include "philo.h"
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+/*pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 int compteur = 0;
 
 static bool	is_pair(int i)
@@ -33,5 +33,29 @@ int main(void) {
 		compteur++;
 	}
 	return 0;
+}*/
+
+
+int main(int argc, char **argv)
+{
+    t_rules rules;
+    int num;
+
+    if (argc != 5 && argc != 6)
+        return (0);
+    num = ft_atoi(argv[1]);
+    if (num == 0)
+        return (0);
+    printf("%d\n", num);
+    rules.nbr_philo = num;
+    if (argc == 6)
+    {
+        num = ft_atoi(argv[5]);
+        if (num == 0)
+            return (0);
+        printf("%d\n", num);
+        rules.nbr_to_eat = num;
+    }
+    return (0);
 }
 

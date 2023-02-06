@@ -26,7 +26,6 @@ typedef struct s_philo
 {
 	int 			id;
 	int				eated;
-	short			stats;
 	bool			fork;
 }					t_philo;
 
@@ -36,5 +35,6 @@ typedef struct s_rules
 	int				nbr_to_eat;
 }					t_rules;
 
+int ft_atoi(char *arg);
 
 #endif
