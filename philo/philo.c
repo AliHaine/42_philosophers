@@ -1,22 +1,24 @@
 #include "philo.h"
 
 void    *routine(void *arg)
-{;
+{
 	t_philo *philo = arg;
     while (1)
     {
-		while (get_fork(philo) == 0);
-		if (is_death(philo->rules.ms, philo->rules.time_to_die, current_timestamp()) == true)
+		//philo->rules.ms = current_timestamp();
+		while (get_fork(philo) == 0)
 		{
-			put_str(0, philo->id, "died\n");
-			exit(0);
+			if (is_death(philo->rules.ms, philo->rules.time_to_die, current_timestamp()) == true) {
+				put_str(current_timestamp() - philo->rules.ms, philo->id, "died\n");
+				exit(0);
+			}
 		}
-		put_str(0, philo->id, "has eating\n");
+		put_str(current_timestamp() - philo->rules.ms, philo->id, "has eating\n");
 		usleep(philo->rules.time_to_eat);
 		set_fork(philo);
-		put_str(0, philo->id, "has sleeping\n");
+		put_str(current_timestamp() - philo->rules.ms, philo->id, "has sleeping\n");
 		usleep(philo->rules.time_to_sleep);
-		put_str(0, philo->id, "has thinking\n");
+		put_str(current_timestamp() - philo->rules.ms, philo->id, "has thinking\n");
     }
     return (0);
 }
@@ -57,25 +59,17 @@ static bool philo_init(t_rules *rules, t_philo *philo)
     i = 0;
     while (i < rules->nbr_philo)
     {
-        pthread_create(&thread, NULL, routine, &philo[i]);
         pthread_mutex_init(&mutex, NULL);
         philo[i].id = i;
         philo[i].eated = 0;
         philo[i].fork = mutex;
-        philo[i].thread = thread;
         philo[i].rules = *rules;
+		pthread_create(&thread, NULL, routine, &philo[i]);
+		philo[i].thread = thread;
         i++;
     }
     return (true);
 }
-
-/*void tester(t_rules rules)
-{
-	printf("t\n");
-	sleep(2);
-	printf("t\n");
-	is_death(0, 100, current_timestamp()- rules.ms);
-}*/
 
 int main(int argc, char **argv)
 {
@@ -89,12 +83,10 @@ int main(int argc, char **argv)
     if (!philo)
         return (0);
     philo_init(&rules, philo);
-    int i = 0;
-    while (i < rules.nbr_philo)
-    {
-        pthread_join(philo[i].thread, NULL);
-        i++;
-    }
+	while (1)
+	{
+
+	}
     return (0);
 }
 

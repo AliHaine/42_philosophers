@@ -3,7 +3,7 @@
 bool	is_death(int i, int max, int t)
 {
 
-	printf("%d, %d, %d\n", i, max, t);
+	//printf("%d, %d, %d, %d\n", i, max, t, t - i);
 	if (t - i >= max)
 		return (true);
 	return false;

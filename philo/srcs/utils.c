@@ -87,6 +87,7 @@ void    put_str(int ms, int id, char *str)
 		write(1, &conv[i], 1);
 		i++;
 	}
+	write(1, " ", 1);
 	i = 0;
 	conv = ft_itoa(id);
 	while (conv[i])
@@ -95,6 +96,7 @@ void    put_str(int ms, int id, char *str)
 		i++;
 	}
 	i = 0;
+	write(1, " ", 1);
     while (str[i])
     {
         write(1, &str[i], 1);
