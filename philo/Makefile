@@ -1,17 +1,17 @@
 NAME = philo
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -g
-SRCS =	push_swap.c \
-		srcs/struct/struct.c \
-		srcs/struct/struct_utils.c \
+SRCS =	philo.c \
+		srcs/func.c \
+		srcs/utils.c \
 
 OBJS = ${SRCS:.c=.o}
 
 .c.o:
-	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+	${CC} -c $< -o ${<:.c=.o}
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME)
 
 all: $(NAME)
 

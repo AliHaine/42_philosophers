@@ -1,45 +1,22 @@
 #include "philo.h"
 
-/*pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-int compteur = 0;
-
-static bool	is_pair(int i)
-{
-	if (i % 2 == 0)
-		return (true);
-	return (false);
-}
-
-void *thread_func1(void *arg) {
-	if (is_pair(compteur) == true)
-		printf("%d\n", compteur);
-	return (0);
-}
-
-void *thread_func2(void *arg) {
-	if (is_pair(compteur) == false)
-		printf("%d\n", compteur);
-	return (0);
-}
-
-int main(void) {
-	pthread_t thread1, thread2;
-	pthread_create(&thread1, NULL, thread_func1, NULL);
-	pthread_create(&thread2, NULL, thread_func2, NULL);
-	for (i = 0, i++; i < 100)
-	{
-		pthread_join(thread1, NULL);
-		pthread_join(thread2, NULL);
-		compteur++;
-	}
-	return 0;
-}*/
-
 void    *routine(void *arg)
-{
-    while ()
+{;
+	t_philo *philo = arg;
+    while (1)
     {
-
+		while (get_fork(philo) == 0);
+		if (is_death(philo->rules.ms, philo->rules.time_to_die, current_timestamp()) == true)
+		{
+			put_str(0, philo->id, "died\n");
+			exit(0);
+		}
+		put_str(0, philo->id, "has eating\n");
+		usleep(philo->rules.time_to_eat);
+		set_fork(philo);
+		put_str(0, philo->id, "has sleeping\n");
+		usleep(philo->rules.time_to_sleep);
+		put_str(0, philo->id, "has thinking\n");
     }
     return (0);
 }
@@ -50,6 +27,7 @@ static bool rules_init(t_rules *rules, char **argv)
     int i;
 
     i = 1;
+	rules->ms = current_timestamp();
     while (argv[i])
     {
         num = ft_atoi(argv[i]);
@@ -79,7 +57,7 @@ static bool philo_init(t_rules *rules, t_philo *philo)
     i = 0;
     while (i < rules->nbr_philo)
     {
-        pthread_create(&thread, NULL, routine, NULL);
+        pthread_create(&thread, NULL, routine, &philo[i]);
         pthread_mutex_init(&mutex, NULL);
         philo[i].id = i;
         philo[i].eated = 0;
@@ -90,6 +68,14 @@ static bool philo_init(t_rules *rules, t_philo *philo)
     }
     return (true);
 }
+
+/*void tester(t_rules rules)
+{
+	printf("t\n");
+	sleep(2);
+	printf("t\n");
+	is_death(0, 100, current_timestamp()- rules.ms);
+}*/
 
 int main(int argc, char **argv)
 {
@@ -106,11 +92,9 @@ int main(int argc, char **argv)
     int i = 0;
     while (i < rules.nbr_philo)
     {
-        pthread_join(philo->thread, NULL);
+        pthread_join(philo[i].thread, NULL);
         i++;
     }
-    printf("%d, %d, %d, %d ,%d\n", rules.nbr_philo, rules.time_to_die, rules.time_to_eat, rules.time_to_sleep, rules.nbr_to_eat);
-
     return (0);
 }
 
