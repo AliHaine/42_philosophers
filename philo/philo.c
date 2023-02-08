@@ -5,20 +5,20 @@ void    *routine(void *arg)
 	t_philo *philo = arg;
     while (1)
     {
-		//philo->rules.ms = current_timestamp();
 		while (get_fork(philo) == 0)
 		{
-			if (is_death(philo->rules.ms, philo->rules.time_to_die, current_timestamp()) == true) {
-				put_str(current_timestamp() - philo->rules.ms, philo->id, "died\n");
-				exit(0);
+			//printf("id while %d\n", philo->id);
+			if (is_death(philo->rules->ms, philo->rules->time_to_die, current_timestamp()) == true) {
+				put_str(current_timestamp() - philo->rules->ms, philo->id, "died\n", &philo->rules->msg);
+				//exit(0);
 			}
 		}
-		put_str(current_timestamp() - philo->rules.ms, philo->id, "has eating\n");
-		usleep(philo->rules.time_to_eat);
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "has eating\n", &philo->rules->msg);
+		usleep(philo->rules->time_to_eat);
 		set_fork(philo);
-		put_str(current_timestamp() - philo->rules.ms, philo->id, "has sleeping\n");
-		usleep(philo->rules.time_to_sleep);
-		put_str(current_timestamp() - philo->rules.ms, philo->id, "has thinking\n");
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "has sleeping\n", &philo->rules->msg);
+		usleep(philo->rules->time_to_sleep);
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "has thinking\n", &philo->rules->msg);
     }
     return (0);
 }
@@ -27,6 +27,7 @@ static bool rules_init(t_rules *rules, char **argv)
 {
     int num;
     int i;
+	pthread_mutex_init(&rules->msg, NULL);
 
     i = 1;
 	rules->ms = current_timestamp();
@@ -38,13 +39,13 @@ static bool rules_init(t_rules *rules, char **argv)
         if (i == 1)
             rules->nbr_philo = num;
         else if (i == 2)
-            rules->time_to_die = num;
+            rules->time_to_die = num * 1000;
         else if (i == 3)
-            rules->time_to_eat = num;
+            rules->time_to_eat = num * 1000;
         else if (i == 4)
-            rules->time_to_sleep = num;
+            rules->time_to_sleep = num * 1000;
         else
-            rules->nbr_to_eat = num;
+            rules->nbr_to_eat = num * 1000;
         i++;
     }
     return (true);
@@ -53,18 +54,18 @@ static bool rules_init(t_rules *rules, char **argv)
 static bool philo_init(t_rules *rules, t_philo *philo)
 {
     int i;
-    pthread_t thread;
-    pthread_mutex_t mutex;
 
     i = 0;
     while (i < rules->nbr_philo)
     {
+		pthread_t thread;
+		pthread_mutex_t mutex;
         pthread_mutex_init(&mutex, NULL);
         philo[i].id = i;
         philo[i].eated = 0;
         philo[i].fork = mutex;
-        philo[i].rules = *rules;
-		pthread_create(&thread, NULL, routine, &philo[i]);
+        philo[i].rules = rules;
+		pthread_create(&thread, NULL, &routine, &philo[i]);
 		philo[i].thread = thread;
         i++;
     }
@@ -79,10 +80,18 @@ int main(int argc, char **argv)
     if (argc != 5 && argc != 6)
         return (0);
     rules_init(&rules, argv);
+	//printf("///mutex 2 %p////\n", &rules.msg);
     philo = malloc(sizeof(t_philo) * rules.nbr_philo);
     if (!philo)
         return (0);
     philo_init(&rules, philo);
+	printf("///mutex 2 %p////\n", &philo[0].rules->msg);
+	int i = 0;
+	while (i < rules.nbr_philo)
+	{
+		printf("%d, %p, %p\n", philo[i].id, &philo[i].fork, philo[i].thread);
+		i++;
+	}
 	while (1)
 	{
 

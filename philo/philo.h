@@ -31,6 +31,7 @@ typedef struct s_rules
     int				nbr_philo;
     int				nbr_to_eat;
 	int 			ms;
+	pthread_mutex_t	msg;
 }					t_rules;
 
 typedef struct s_philo
@@ -39,11 +40,11 @@ typedef struct s_philo
 	int 			id;
 	int				eated;
     pthread_mutex_t	fork;
-    struct s_rules rules;
+    struct s_rules *rules;
 }					t_philo;
 
 int ft_atoi(char *arg);
-void    put_str(int ms, int id, char *str);
+void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex);
 int	get_fork(t_philo *philo);
 bool	is_death(int i, int max, int t);
 long long current_timestamp();

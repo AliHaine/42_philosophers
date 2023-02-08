@@ -75,8 +75,9 @@ char *ft_itoa(int i)
 	return (str);
 }
 
-void    put_str(int ms, int id, char *str)
+void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex)
 {
+	pthread_mutex_lock(mutex);
     int i;
 	char *conv;
 
@@ -102,4 +103,5 @@ void    put_str(int ms, int id, char *str)
         write(1, &str[i], 1);
         i++;
     }
+	pthread_mutex_unlock(mutex);
 }
