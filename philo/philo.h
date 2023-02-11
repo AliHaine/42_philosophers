@@ -50,5 +50,6 @@ bool	is_death(int i, int max, int t);
 long long current_timestamp();
 void	set_fork(t_philo *philo);
 char *ft_itoa(int i);
+void    fff(pthread_mutex_t *mutex, t_philo *philo);
 
 #endif

@@ -7,11 +7,12 @@ void    *routine(void *arg)
     {
 		while (get_fork(philo) == 0)
 		{
-			//printf("id while %d\n", philo->id);
 			if (is_death(philo->rules->ms, philo->rules->time_to_die, current_timestamp()) == true) {
 				put_str(current_timestamp() - philo->rules->ms, philo->id, "died\n", &philo->rules->msg);
 				//exit(0);
 			}
+			pthread_cancel(arg);
+			return (0);
 		}
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has eating\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_eat);
@@ -19,6 +20,8 @@ void    *routine(void *arg)
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has sleeping\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_sleep);
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has thinking\n", &philo->rules->msg);
+		pthread_cancel(arg);
+		return (0);
     }
     return (0);
 }
@@ -80,16 +83,14 @@ int main(int argc, char **argv)
     if (argc != 5 && argc != 6)
         return (0);
     rules_init(&rules, argv);
-	//printf("///mutex 2 %p////\n", &rules.msg);
     philo = malloc(sizeof(t_philo) * rules.nbr_philo);
     if (!philo)
         return (0);
     philo_init(&rules, philo);
-	printf("///mutex 2 %p////\n", &philo[0].rules->msg);
 	int i = 0;
 	while (i < rules.nbr_philo)
 	{
-		printf("%d, %p, %p\n", philo[i].id, &philo[i].fork, philo[i].thread);
+		printf("%d, %p, %p\n", philo[i].id, &philo[i].fork, &philo[i]);
 		i++;
 	}
 	while (1)

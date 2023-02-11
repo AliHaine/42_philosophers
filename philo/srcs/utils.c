@@ -75,6 +75,18 @@ char *ft_itoa(int i)
 	return (str);
 }
 
+void    fff(pthread_mutex_t *mutex, t_philo *philo)
+{
+	pthread_mutex_lock(mutex);
+
+	if (philo->id == 0)
+		printf("ID %d, POINTER %p, PREV P %p\n", philo->id, &philo->fork, &philo[philo->rules->nbr_philo - 1].fork);
+	else
+		printf("ID %d, POINTER %p, PREV P %p\n", philo->id, &philo->fork, &philo[philo->id - 1].fork);
+	pthread_mutex_unlock(mutex);
+}
+
+
 void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex)
 {
 	pthread_mutex_lock(mutex);
