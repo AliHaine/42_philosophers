@@ -3,9 +3,18 @@
 void    *routine(void *arg)
 {
 	t_philo *philo = arg;
-    while (1)
+	int i = 1;
+	while (i < philo->rules->nbr_philo)
+	{
+		if (philo[i].id != 0) {
+			printf("LA : %d, Fourchette : %p, Philo : %p Prev philo %p\n", philo[i].id, &philo[i].fork, &philo[i],
+				   &philo[i - 1]);
+			i++;
+		}
+	}
+	while (1)
     {
-		while (get_fork(philo) == 0)
+		while (get_fork(arg) == 0)
 		{
 			if (is_death(philo->rules->ms, philo->rules->time_to_die, current_timestamp()) == true) {
 				put_str(current_timestamp() - philo->rules->ms, philo->id, "died\n", &philo->rules->msg);
@@ -16,7 +25,7 @@ void    *routine(void *arg)
 		}
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has eating\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_eat);
-		set_fork(philo);
+		set_fork(arg);
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has sleeping\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_sleep);
 		put_str(current_timestamp() - philo->rules->ms, philo->id, "has thinking\n", &philo->rules->msg);
@@ -68,7 +77,7 @@ static bool philo_init(t_rules *rules, t_philo *philo)
         philo[i].eated = 0;
         philo[i].fork = mutex;
         philo[i].rules = rules;
-		pthread_create(&thread, NULL, &routine, &philo[i]);
+		pthread_create(&thread, NULL, &routine, philo);
 		philo[i].thread = thread;
         i++;
     }
@@ -90,7 +99,7 @@ int main(int argc, char **argv)
 	int i = 0;
 	while (i < rules.nbr_philo)
 	{
-		printf("%d, %p, %p\n", philo[i].id, &philo[i].fork, &philo[i]);
+		printf("Id : %d, Fourchette : %p, Philo : %p\n", philo[i].id, &philo[i].fork, &philo[i]);
 		i++;
 	}
 	while (1)
