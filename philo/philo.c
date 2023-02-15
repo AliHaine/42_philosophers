@@ -3,34 +3,20 @@
 void    *routine(void *arg)
 {
 	t_philo *philo = arg;
-	int i = 1;
-	while (i < philo->rules->nbr_philo)
-	{
-		if (philo[i].id != 0) {
-			printf("LA : %d, Fourchette : %p, Philo : %p Prev philo %p\n", philo[i].id, &philo[i].fork, &philo[i],
-				   &philo[i - 1]);
-			i++;
-		}
-	}
 	while (1)
     {
-		while (get_fork(arg) == 0)
-		{
-			if (is_death(philo->rules->ms, philo->rules->time_to_die, current_timestamp()) == true) {
-				put_str(current_timestamp() - philo->rules->ms, philo->id, "died\n", &philo->rules->msg);
-				//exit(0);
-			}
-			pthread_cancel(arg);
-			return (0);
-		}
-		put_str(current_timestamp() - philo->rules->ms, philo->id, "has eating\n", &philo->rules->msg);
+		pthread_mutex_lock(&(philo->fork[philo->id % philo->rules->nbr_philo]));
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "Taken own fork\n", &philo->rules->msg);
+		pthread_mutex_lock(&(philo->fork[philo->id + 1]));
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "Taken back fork\n", &philo->rules->msg);
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "is eating\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_eat);
-		set_fork(arg);
-		put_str(current_timestamp() - philo->rules->ms, philo->id, "has sleeping\n", &philo->rules->msg);
+		philo->eated++;
+		pthread_mutex_unlock(&(philo->fork[philo->id + 1]));
+		pthread_mutex_unlock(&(philo->fork[philo->id % philo->rules->nbr_philo]));
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "is sleeping\n", &philo->rules->msg);
 		usleep(philo->rules->time_to_sleep);
-		put_str(current_timestamp() - philo->rules->ms, philo->id, "has thinking\n", &philo->rules->msg);
-		pthread_cancel(arg);
-		return (0);
+		put_str(current_timestamp() - philo->rules->ms, philo->id, "is thinking\n", &philo->rules->msg);
     }
     return (0);
 }
@@ -63,7 +49,7 @@ static bool rules_init(t_rules *rules, char **argv)
     return (true);
 }
 
-static bool philo_init(t_rules *rules, t_philo *philo)
+static bool philo_init(t_rules *rules, t_philo *philo, pthread_mutex_t *forks)
 {
     int i;
 
@@ -71,35 +57,49 @@ static bool philo_init(t_rules *rules, t_philo *philo)
     while (i < rules->nbr_philo)
     {
 		pthread_t thread;
-		pthread_mutex_t mutex;
-        pthread_mutex_init(&mutex, NULL);
         philo[i].id = i;
         philo[i].eated = 0;
-        philo[i].fork = mutex;
+        philo[i].fork = forks;
         philo[i].rules = rules;
-		pthread_create(&thread, NULL, &routine, philo);
+		pthread_create(&thread, NULL, &routine, &(philo[i]));
 		philo[i].thread = thread;
         i++;
+		usleep(300);
     }
     return (true);
 }
+
+static int forks_init(pthread_mutex_t *forks, int philo_nbr)
+{
+	while (philo_nbr > 0)
+	{
+		//si echec ?
+		pthread_mutex_init(&(forks[philo_nbr]), NULL);
+		philo_nbr--;
+	}
+	return (1);
+}
+
 
 int main(int argc, char **argv)
 {
     t_rules rules;
     t_philo *philo;
+	pthread_mutex_t *forks;
 
     if (argc != 5 && argc != 6)
         return (0);
     rules_init(&rules, argv);
-    philo = malloc(sizeof(t_philo) * rules.nbr_philo);
+	forks = malloc(sizeof(pthread_mutex_t) * rules.nbr_philo);
+	forks_init(forks, rules.nbr_philo);
+	philo = malloc(sizeof(t_philo) * rules.nbr_philo);
     if (!philo)
         return (0);
-    philo_init(&rules, philo);
+    philo_init(&rules, philo, forks);
 	int i = 0;
 	while (i < rules.nbr_philo)
 	{
-		printf("Id : %d, Fourchette : %p, Philo : %p\n", philo[i].id, &philo[i].fork, &philo[i]);
+		printf("Id : %d, Fourchette : %p, Philo : %p\n", philo[i].id, &philo[i].fork[i], &philo[i]);
 		i++;
 	}
 	while (1)

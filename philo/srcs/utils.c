@@ -81,9 +81,9 @@ void    fff(pthread_mutex_t *mutex, t_philo *philo)
 
 
 	if (philo->id == 0)
-		printf("ID %d, Fork %p, Prev Fork %p, Prev Philo %p\n", philo->id, &philo->fork, &philo[philo->rules->nbr_philo - 1].fork, philo);
+		printf("ID %d, Fork %p, Prev Fork %p, Prev Philo %p\n", philo->id, &(philo->fork[philo->id]), &(philo->fork[philo->rules->nbr_philo - 1]), philo);
 	else
-		printf("ID %d, Fork %p, Prev Fork %p, Prev Philo %p\n", philo->id, &philo->fork, &philo[philo->id - 1].fork, &philo[(philo->id - 1)]);
+		printf("ID %d, Fork %p, Prev Fork %p, Prev Philo %p\n", philo->id, &philo->fork, &philo->fork[philo->id - 1], &philo[1]);
 	pthread_mutex_unlock(mutex);
 }
 

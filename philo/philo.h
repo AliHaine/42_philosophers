@@ -39,7 +39,7 @@ typedef struct s_philo
     pthread_t       thread;
 	int 			id;
 	int				eated;
-    pthread_mutex_t	fork;
+    pthread_mutex_t	*fork;
     struct s_rules *rules;
 }					t_philo;
 
