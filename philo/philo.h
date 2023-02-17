@@ -53,5 +53,6 @@ long long current_timestamp();
 void	set_fork(t_philo *philo);
 char *ft_itoa(int i);
 void	free_and_exit(struct s_philo *philo);
+bool	check_error(int argc, char **argv, struct s_rules rules);
 
 #endif

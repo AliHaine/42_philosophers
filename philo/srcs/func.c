@@ -27,3 +27,37 @@ void	free_and_exit(struct s_philo *philo)
 	free(philo);
 	exit(1);
 }
+
+bool	check_error(int argc, char **argv, struct s_rules rules)
+{
+	if (rules.nbr_philo == 0 || rules.nbr_philo < 0
+	        || rules.nbr_philo > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (rules.nbr_to_eat < 0 || rules.nbr_to_eat > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (rules.time_to_sleep == 0 || rules.time_to_sleep < 0
+		|| rules.time_to_sleep > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (rules.time_to_die == 0 || rules.time_to_die < 0
+		|| rules.time_to_die > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (rules.time_to_eat == 0 || rules.time_to_eat < 0
+		|| rules.time_to_eat > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	return (true);
+}

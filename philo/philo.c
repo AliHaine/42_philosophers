@@ -126,10 +126,14 @@ int main(int argc, char **argv)
     t_rules rules;
     t_philo *philo;
 	pthread_mutex_t *forks;
-
-    if (argc != 5 && argc != 6)
-        return (1);
+	if (argc != 5 && argc != 6)
+	{
+		write(1, "Error\n", 6);
+		return (false);
+	}
     rules_init(&rules, argv);
+	if (check_error(argc, argv, rules) == false)
+		return (1);
 	forks = malloc(sizeof(pthread_mutex_t) * rules.nbr_philo);
 	if (!forks)
 		return (1);
