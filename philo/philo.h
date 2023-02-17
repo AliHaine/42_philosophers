@@ -52,6 +52,6 @@ void	ft_sleep(int time);
 long long current_timestamp();
 void	set_fork(t_philo *philo);
 char *ft_itoa(int i);
-void    fff(pthread_mutex_t *mutex, t_philo *philo);
+void	free_and_exit(struct s_philo *philo);
 
 #endif

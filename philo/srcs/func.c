@@ -13,9 +13,17 @@ void	ft_sleep(int time)
 	struct timeval	actu;
 
 	gettimeofday(&base, NULL);
-	actu = base;
-	while (base.tv_usec - actu.tv_usec != time)
+	gettimeofday(&actu, NULL);
+	while (((actu.tv_sec - base.tv_sec) * 1000000 + (actu.tv_usec - base.tv_usec)) < time)
 	{
-		gettimeofday(&base, NULL);
+		usleep(500);
+		gettimeofday(&actu, NULL);
 	}
+}
+
+void	free_and_exit(struct s_philo *philo)
+{
+	free(philo->fork);
+	free(philo);
+	exit(1);
 }
