@@ -30,7 +30,7 @@ typedef struct s_rules
     int             time_to_sleep;
     int				nbr_philo;
     int				nbr_to_eat;
-	int 			ms;
+	long long 		ms;
 	pthread_mutex_t	msg;
 }					t_rules;
 
@@ -39,6 +39,7 @@ typedef struct s_philo
     pthread_t       thread;
 	int 			id;
 	int				eated;
+	long long		last_eat;
     pthread_mutex_t	*fork;
     struct s_rules *rules;
 }					t_philo;
@@ -46,7 +47,8 @@ typedef struct s_philo
 int ft_atoi(char *arg);
 void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex);
 int	get_fork(t_philo *philo);
-bool	is_death(int i, int max, int t);
+bool	is_death(long long i, int max);
+void	ft_sleep(int time);
 long long current_timestamp();
 void	set_fork(t_philo *philo);
 char *ft_itoa(int i);

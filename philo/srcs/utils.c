@@ -2,10 +2,9 @@
 
 long long current_timestamp() {
 	struct timeval te;
-	gettimeofday(&te, NULL); // get current time
-	long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
-	// printf("milliseconds: %lld\n", milliseconds);
-	return milliseconds;
+	gettimeofday(&te, NULL);
+	long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000;
+	return (milliseconds);
 }
 
 static bool is_digit(char c)
@@ -34,44 +33,29 @@ int ft_atoi(char *argv)
     return (result);
 }
 
-static int	get_power(int i)
-{
-	int o;
-
-	o = 10;
-	while (i > 0)
-	{
-		o = o * 10;
-		i--;
-	}
-	return (o / 10);
-}
-
 char *ft_itoa(int i)
 {
 	int size;
 	int save;
 	char *str;
-	int o;
 
 	size = 1;
 	save = i;
-	o = 0;
 	while (save > 9)
 	{
 		save /= 10;
 		size++;
 	}
-	str = malloc(sizeof(char) * size + 1);
+	str = malloc(sizeof(char) * size);
+	str[size] = 0;
+	size--;
 	while (i > 9)
 	{
-		str[o] = (i / get_power(size - 1) + '0');
+		str[size] = (char) ((i % 10) + '0');
 		i /= 10;
 		size--;
-		o++;
 	}
-	str[o] = i + '0';
-	str[o + 1] = 0;
+	str[0] = i + '0';
 	return (str);
 }
 
@@ -103,6 +87,7 @@ void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex)
 	}
 	write(1, " ", 1);
 	i = 0;
+	free(conv);
 	conv = ft_itoa(id);
 	while (conv[i])
 	{
@@ -110,6 +95,7 @@ void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex)
 		i++;
 	}
 	i = 0;
+	free(conv);
 	write(1, " ", 1);
     while (str[i])
     {
