@@ -36,12 +36,10 @@ void	*routine(void *arg)
 	return (0);
 }
 
-static bool	rules_init(t_rules *rules, char **argv, int i)
+static bool	rules_init(t_rules *rules, char **argv, int i, int num)
 {
-	int	num;
-
 	rules->ms = c_t();
-	rules->msg = sem_open("/msg", O_CREAT, S_IRUSR | S_IWUSR, 1);
+	rules->msg = sem_open("/msg_bonus", O_CREAT, S_IRUSR | S_IWUSR, 1);
 	if (rules->msg == SEM_FAILED)
 		exit(1);
 	while (argv[i])
@@ -107,7 +105,7 @@ int	main(int argc, char **argv)
 		write(1, "Error\n", 6);
 		return (1);
 	}
-	rules_init(&rules, argv, 1);
+	rules_init(&rules, argv, 1, 0);
 	if (check_error(rules) == false)
 		return (1);
 	if (forks_init(rules.nbr_philo, rules) == false)

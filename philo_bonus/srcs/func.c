@@ -36,6 +36,7 @@ void	ft_sleep(int t)
 void	free_and_exit(struct s_philo *philo)
 {
 	sem_unlink("/fork");
+	sem_unlink("/msg_bonus");
 	free(philo);
 	exit(1);
 }
