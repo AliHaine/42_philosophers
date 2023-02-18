@@ -36,12 +36,10 @@ void	*routine(void *arg)
 	return (0);
 }
 
-static bool	rules_init(t_rules *rules, char **argv)
+static bool	rules_init(t_rules *rules, char **argv, int i)
 {
 	int	num;
-	int	i;
 
-	i = 1;
 	rules->ms = c_t();
 	if (pthread_mutex_init(&rules->msg, NULL) != 0)
 		exit(0);
@@ -62,6 +60,8 @@ static bool	rules_init(t_rules *rules, char **argv)
 			rules->nbr_to_eat = num;
 		i++;
 	}
+	if (i != 6)
+		rules->nbr_to_eat = 0;
 	return (true);
 }
 
@@ -106,9 +106,9 @@ int	main(int argc, char **argv)
 	if (argc != 5 && argc != 6)
 	{
 		write(1, "Error\n", 6);
-		return (false);
+		return (1);
 	}
-	rules_init(&rules, argv);
+	rules_init(&rules, argv, 1);
 	if (check_error(rules) == false)
 		return (1);
 	forks = malloc(sizeof(pthread_mutex_t) * rules.nbr_philo);

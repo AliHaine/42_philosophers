@@ -32,7 +32,10 @@ int	ft_atoi(char *argv)
 	while (argv[i])
 	{
 		if (!(argv[i] >= '0' && argv[i] <= '9'))
-			return (0);
+		{
+			write(2, "Error\n", 6);
+			exit(1);
+		}
 		result = (result * 10) + (argv[i] - '0');
 		i++;
 	}
@@ -54,8 +57,8 @@ char	*ft_itoa(int i)
 		save /= 10;
 		size++;
 	}
-	str = malloc(sizeof(char) * size);
-	str[size] = 0;
+	str = malloc(sizeof(char) * (size + 1));
+	str[size] = '\0';
 	size--;
 	while (i > 9)
 	{
