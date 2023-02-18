@@ -4,14 +4,15 @@ CFLAGS = -Wall -Werror -Wextra -g
 SRCS =	philo.c \
 		srcs/func.c \
 		srcs/utils.c \
+		srcs/helper.c \
 
 OBJS = ${SRCS:.c=.o}
 
 .c.o:
-	${CC} -c $< -o ${<:.c=.o}
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
+	$(CC) ${CFLAGS} $(OBJS) -o $(NAME)
 
 all: $(NAME)
 

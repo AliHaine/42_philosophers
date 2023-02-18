@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.h                                        :+:      :+:    :+:   */
+/*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayagmur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -20,39 +20,38 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-# define ERROR_ALR_NBR "Ce nombre est déjà défini"
-# define ERROR_NOT_NBR "Seul les nombres sont acceptes"
-
 typedef struct s_rules
 {
-    int             time_to_die;
-    int             time_to_eat;
-    int             time_to_sleep;
-    int				nbr_philo;
-    int				nbr_to_eat;
-	long long 		ms;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				nbr_philo;
+	int				nbr_to_eat;
+	long long		ms;
 	pthread_mutex_t	msg;
 }					t_rules;
 
 typedef struct s_philo
 {
-    pthread_t       thread;
-	int 			id;
+	pthread_t		thread;
+	int				id;
 	int				eated;
 	long long		last_eat;
-    pthread_mutex_t	*fork;
-    struct s_rules *rules;
+	pthread_mutex_t	*fork;
+	struct s_rules	*rules;
 }					t_philo;
 
-int ft_atoi(char *arg);
-void    put_str(int ms, int id, char *str, pthread_mutex_t *mutex);
-int	get_fork(t_philo *philo);
-bool	is_death(long long i, int max);
-void	ft_sleep(int time);
-long long current_timestamp();
-void	set_fork(t_philo *philo);
-char *ft_itoa(int i);
-void	free_and_exit(struct s_philo *philo);
-bool	check_error(int argc, char **argv, struct s_rules rules);
+int			ft_atoi(char *arg);
+void		p_s(int ms, int id, char *str, pthread_mutex_t *mutex);
+int			get_fork(t_philo *philo);
+bool		is_death(long long i, int max);
+void		ft_sleep(int t);
+long long	c_t(void);
+void		set_fork(t_philo *philo);
+char		*ft_itoa(int i);
+void		free_and_exit(struct s_philo *philo);
+bool		check_error(struct s_rules rules);
+void		ps_helper(char *str);
+void		eat_checker(struct s_philo *philo, struct s_rules rules);
 
 #endif

@@ -1,23 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   func.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ayagmur <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/18 12:08:28 by ayagmur           #+#    #+#             */
+/*   Updated: 2023/02/18 12:08:30 by ayagmur          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../philo.h"
 
 bool	is_death(long long i, int max)
 {
-	if ((max / 1000) < (current_timestamp() - i))
+	if ((max / 1000) < (c_t() - i))
 		return (true);
-	return false;
+	return (false);
 }
 
-void	ft_sleep(int time)
+void	ft_sleep(int t)
 {
-	struct timeval	base;
-	struct timeval	actu;
+	struct timeval	b;
+	struct timeval	a;
 
-	gettimeofday(&base, NULL);
-	gettimeofday(&actu, NULL);
-	while (((actu.tv_sec - base.tv_sec) * 1000000 + (actu.tv_usec - base.tv_usec)) < time)
+	gettimeofday(&b, NULL);
+	gettimeofday(&a, NULL);
+	while (((a.tv_sec - b.tv_sec) * 1000000 + (a.tv_usec - b.tv_usec)) < t)
 	{
-		usleep(500);
-		gettimeofday(&actu, NULL);
+		usleep(100);
+		gettimeofday(&a, NULL);
 	}
 }
 
@@ -28,19 +40,8 @@ void	free_and_exit(struct s_philo *philo)
 	exit(1);
 }
 
-bool	check_error(int argc, char **argv, struct s_rules rules)
+static bool	check_error_two(struct s_rules rules)
 {
-	if (rules.nbr_philo == 0 || rules.nbr_philo < 0
-	        || rules.nbr_philo > 2147483647)
-	{
-		write(2, "Error\n", 6);
-		return (false);
-	}
-	if (rules.nbr_to_eat < 0 || rules.nbr_to_eat > 2147483647)
-	{
-		write(2, "Error\n", 6);
-		return (false);
-	}
 	if (rules.time_to_sleep == 0 || rules.time_to_sleep < 0
 		|| rules.time_to_sleep > 2147483647)
 	{
@@ -59,5 +60,23 @@ bool	check_error(int argc, char **argv, struct s_rules rules)
 		write(2, "Error\n", 6);
 		return (false);
 	}
+	return (true);
+}
+
+bool	check_error(struct s_rules rules)
+{
+	if (rules.nbr_philo == 0 || rules.nbr_philo < 0
+		|| rules.nbr_philo > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (rules.nbr_to_eat < 0 || rules.nbr_to_eat > 2147483647)
+	{
+		write(2, "Error\n", 6);
+		return (false);
+	}
+	if (check_error_two(rules) == false)
+		return (false);
 	return (true);
 }
