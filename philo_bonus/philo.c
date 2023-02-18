@@ -39,13 +39,11 @@ void	*routine(void *arg)
 static bool	rules_init(t_rules *rules, char **argv, int i)
 {
 	int	num;
-	sem_t	*msg;
 
 	rules->ms = c_t();
-	msg = sem_open("/msg", O_CREAT, S_IRUSR | S_IWUSR, 1);
-	if (msg == SEM_FAILED)
+	rules->msg = sem_open("/msg", O_CREAT, S_IRUSR | S_IWUSR, 1);
+	if (rules->msg == SEM_FAILED)
 		exit(1);
-	rules->msg = msg;
 	while (argv[i])
 	{
 		num = ft_atoi(argv[i]);

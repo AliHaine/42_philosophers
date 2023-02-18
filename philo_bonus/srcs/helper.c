@@ -50,7 +50,7 @@ void	eat_checker(struct s_philo *philo, struct s_rules rules)
 	{
 		if (is_death(philo[i].last_eat, rules.time_to_die))
 		{
-			p_s(c_t() - rules.ms, philo[i].id, "died\n", &rules.msg);
+			p_s(c_t() - rules.ms, philo[i].id, "died\n", rules.msg);
 			free_and_exit(philo);
 		}
 		i++;

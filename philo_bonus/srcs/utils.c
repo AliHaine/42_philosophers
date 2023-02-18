@@ -74,6 +74,7 @@ void	p_s(int ms, int id, char *str, sem_t *sem)
 {
 	int		i;
 	char	*conv;
+	(void)sem;
 
 	sem_wait(sem);
 	i = 0;

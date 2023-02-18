@@ -1,6 +1,6 @@
 NAME = philo_bonus
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS =
 SRCS =	philo.c \
 		srcs/func.c \
 		srcs/utils.c \
