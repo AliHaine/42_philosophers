@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 bool	is_death(long long i, int max)
 {
@@ -35,7 +35,7 @@ void	ft_sleep(int t)
 
 void	free_and_exit(struct s_philo *philo)
 {
-	free(philo->fork);
+	sem_unlink("/fork");
 	free(philo);
 	exit(1);
 }

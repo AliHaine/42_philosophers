@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void	*routine(void *arg)
 {
@@ -19,19 +19,19 @@ void	*routine(void *arg)
 	p = arg;
 	while (1)
 	{
-		pthread_mutex_lock(&(p->fork[p->id]));
-		p_s(c_t() - p->rules->ms, p->id, "has taken a fork\n", &p->rules->msg);
-		pthread_mutex_lock(&(p->fork[(p->id + 1) % p->rules->nbr_philo]));
-		p_s(c_t() - p->rules->ms, p->id, "has taken a fork\n", &p->rules->msg);
-		p_s(c_t() - p->rules->ms, p->id, "is eating\n", &p->rules->msg);
+		sem_wait(p->rules->fork);
+		p_s(c_t() - p->rules->ms, p->id, "has taken a fork\n", p->rules->msg);
+		sem_wait(p->rules->fork);
+		p_s(c_t() - p->rules->ms, p->id, "has taken a fork\n", p->rules->msg);
+		p_s(c_t() - p->rules->ms, p->id, "is eating\n", p->rules->msg);
 		ft_sleep(p->rules->time_to_eat);
 		p->last_eat = c_t();
 		p->eated++;
-		pthread_mutex_unlock(&(p->fork[(p->id + 1) % p->rules->nbr_philo]));
-		pthread_mutex_unlock(&(p->fork[p->id]));
-		p_s(c_t() - p->rules->ms, p->id, "is sleeping\n", &p->rules->msg);
+		sem_post(p->rules->fork);
+		sem_post(p->rules->fork);
+		p_s(c_t() - p->rules->ms, p->id, "is sleeping\n", p->rules->msg);
 		ft_sleep(p->rules->time_to_sleep);
-		p_s(c_t() - p->rules->ms, p->id, "is thinking\n", &p->rules->msg);
+		p_s(c_t() - p->rules->ms, p->id, "is thinking\n", p->rules->msg);
 	}
 	return (0);
 }
@@ -39,10 +39,13 @@ void	*routine(void *arg)
 static bool	rules_init(t_rules *rules, char **argv, int i)
 {
 	int	num;
+	sem_t	*msg;
 
 	rules->ms = c_t();
-	if (pthread_mutex_init(&rules->msg, NULL) != 0)
-		exit(0);
+	msg = sem_open("/msg", O_CREAT, S_IRUSR | S_IWUSR, 1);
+	if (msg == SEM_FAILED)
+		exit(1);
+	rules->msg = msg;
 	while (argv[i])
 	{
 		num = ft_atoi(argv[i]);
@@ -87,19 +90,12 @@ static bool	philo_init(t_rules *rules, t_philo *philo)
 
 static bool	forks_init(int philo_nbr, t_rules rules)
 {
-	int *fork;
-	int	i;
+	sem_t	*sem;
 
-	fork = malloc(sizeof(int) * philo_nbr);
-	if (!fork)
+	sem = sem_open("/fork", O_CREAT, S_IRUSR | S_IWUSR, philo_nbr);
+	if (sem == SEM_FAILED)
 		return (false);
-	while (fork[i])
-	{
-		fork[i] = 2;
-		i++;
-	}
-	fork[i] = 0;
-	rules.fork = fork;
+	rules.fork = sem;
 	return (true);
 }
 
@@ -107,7 +103,6 @@ int	main(int argc, char **argv)
 {
 	t_rules			rules;
 	t_philo			*philo;
-	pthread_mutex_t	*forks;
 
 	if (argc != 5 && argc != 6)
 	{
@@ -117,9 +112,6 @@ int	main(int argc, char **argv)
 	rules_init(&rules, argv, 1);
 	if (check_error(rules) == false)
 		return (1);
-	forks = malloc(sizeof(pthread_mutex_t) * rules.nbr_philo);
-	if (!forks)
-		return (1);
 	if (forks_init(rules.nbr_philo, rules) == false)
 	{
 		write(1, "Error\n", 6);
@@ -128,7 +120,7 @@ int	main(int argc, char **argv)
 	philo = malloc(sizeof(t_philo) * rules.nbr_philo);
 	if (!philo)
 	{
-		free(forks);
+		free(rules.fork);
 		return (1);
 	}
 	philo_init(&rules, philo);

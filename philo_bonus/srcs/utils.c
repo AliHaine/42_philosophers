@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
 long long	c_t(void)
 {
@@ -70,12 +70,12 @@ char	*ft_itoa(int i)
 	return (str);
 }
 
-void	p_s(int ms, int id, char *str, pthread_mutex_t *mutex)
+void	p_s(int ms, int id, char *str, sem_t *sem)
 {
 	int		i;
 	char	*conv;
 
-	pthread_mutex_lock(mutex);
+	sem_wait(sem);
 	i = 0;
 	conv = ft_itoa(ms);
 	while (conv[i])
@@ -94,5 +94,5 @@ void	p_s(int ms, int id, char *str, pthread_mutex_t *mutex)
 	}
 	free(conv);
 	ps_helper(str);
-	pthread_mutex_unlock(mutex);
+	sem_post(sem);
 }

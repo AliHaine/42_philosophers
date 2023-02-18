@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayagmur <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/18 13:32:08 by ayagmur           #+#    #+#             */
-/*   Updated: 2023/02/18 13:32:12 by ayagmur          ###   ########.fr       */
+/*   Created: 2023/02/18 15:52:42 by ayagmur           #+#    #+#             */
+/*   Updated: 2023/02/18 15:52:46 by ayagmur          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -19,6 +19,8 @@
 # include <stdbool.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <semaphore.h>
+# include <fcntl.h>
 
 typedef struct s_rules
 {
@@ -28,8 +30,8 @@ typedef struct s_rules
 	int				nbr_philo;
 	int				nbr_to_eat;
 	long long		ms;
-	int				*fork;
-	pthread_mutex_t	msg;
+	sem_t			*fork;
+	sem_t			*msg;
 }					t_rules;
 
 typedef struct s_philo
@@ -42,7 +44,7 @@ typedef struct s_philo
 }					t_philo;
 
 int			ft_atoi(char *arg);
-void		p_s(int ms, int id, char *str, pthread_mutex_t *mutex);
+void		p_s(int ms, int id, char *str, sem_t *sem);
 int			get_fork(t_philo *philo);
 bool		is_death(long long i, int max);
 void		ft_sleep(int t);
