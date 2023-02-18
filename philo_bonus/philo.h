@@ -28,6 +28,7 @@ typedef struct s_rules
 	int				nbr_philo;
 	int				nbr_to_eat;
 	long long		ms;
+	int				*fork;
 	pthread_mutex_t	msg;
 }					t_rules;
 
@@ -37,7 +38,6 @@ typedef struct s_philo
 	int				id;
 	int				eated;
 	long long		last_eat;
-	pthread_mutex_t	*fork;
 	struct s_rules	*rules;
 }					t_philo;
 

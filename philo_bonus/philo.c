@@ -65,7 +65,7 @@ static bool	rules_init(t_rules *rules, char **argv, int i)
 	return (true);
 }
 
-static bool	philo_init(t_rules *rules, t_philo *philo, pthread_mutex_t *forks)
+static bool	philo_init(t_rules *rules, t_philo *philo)
 {
 	int			i;
 	pthread_t	thread;
@@ -75,7 +75,6 @@ static bool	philo_init(t_rules *rules, t_philo *philo, pthread_mutex_t *forks)
 	{
 		philo[i].id = i;
 		philo[i].eated = 0;
-		philo[i].fork = forks;
 		philo[i].rules = rules;
 		philo[i].last_eat = rules->ms;
 		pthread_create(&thread, NULL, &routine, &(philo[i]));
@@ -86,15 +85,22 @@ static bool	philo_init(t_rules *rules, t_philo *philo, pthread_mutex_t *forks)
 	return (true);
 }
 
-static int	forks_init(pthread_mutex_t *forks, int philo_nbr)
+static bool	forks_init(int philo_nbr, t_rules rules)
 {
-	while (philo_nbr > 0)
+	int *fork;
+	int	i;
+
+	fork = malloc(sizeof(int) * philo_nbr);
+	if (!fork)
+		return (false);
+	while (fork[i])
 	{
-		if (pthread_mutex_init(&(forks[philo_nbr - 1]), NULL) != 0)
-			return (0);
-		philo_nbr--;
+		fork[i] = 2;
+		i++;
 	}
-	return (1);
+	fork[i] = 0;
+	rules.fork = fork;
+	return (true);
 }
 
 int	main(int argc, char **argv)
@@ -114,14 +120,18 @@ int	main(int argc, char **argv)
 	forks = malloc(sizeof(pthread_mutex_t) * rules.nbr_philo);
 	if (!forks)
 		return (1);
-	forks_init(forks, rules.nbr_philo);
+	if (forks_init(rules.nbr_philo, rules) == false)
+	{
+		write(1, "Error\n", 6);
+		return (1);
+	}
 	philo = malloc(sizeof(t_philo) * rules.nbr_philo);
 	if (!philo)
 	{
 		free(forks);
 		return (1);
 	}
-	philo_init(&rules, philo, forks);
+	philo_init(&rules, philo);
 	eat_checker(philo, rules);
 	return (0);
 }
