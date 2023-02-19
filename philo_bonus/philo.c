@@ -84,14 +84,15 @@ static bool	philo_init(t_rules *rules, t_philo *philo)
 	return (true);
 }
 
-static bool	forks_init(int philo_nbr, t_rules rules)
+static bool	forks_init(int philo_nbr, t_rules *rules)
 {
 	sem_t	*sem;
 
-	sem = sem_open("/fork", O_CREAT, S_IRUSR | S_IWUSR, philo_nbr);
+	sem = sem_open("/fork_philo", O_CREAT, S_IRUSR | S_IWUSR, philo_nbr);
 	if (sem == SEM_FAILED)
 		return (false);
-	rules.fork = sem;
+	printf("1 %p\n", sem);
+	rules->fork = sem;
 	return (true);
 }
 
@@ -108,7 +109,7 @@ int	main(int argc, char **argv)
 	rules_init(&rules, argv, 1, 0);
 	if (check_error(rules) == false)
 		return (1);
-	if (forks_init(rules.nbr_philo, rules) == false)
+	if (forks_init(rules.nbr_philo, &rules) == false)
 	{
 		write(1, "Error\n", 6);
 		return (1);
